@@ -1,16 +1,18 @@
 import {
   DarkTheme,
   DefaultTheme,
+  NavigationContainer,
   ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { StatusBar } from "expo-status-bar";
+import { Stack } from "expo-router";
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { Text, View } from "react-native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import "../global.css";
+import LoginScreen from "@/app/login";
+import SignupScreen from "@/app/signup";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -23,12 +25,25 @@ export default function RootLayout() {
     return null;
   }
 
+  const RootStack = createNativeStackNavigator();
+
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <View className="flex-1 items-center justify-center bg-background">
-        <Text>Root Layout</Text>
-      </View>
-      <StatusBar style="auto" />
+      <Stack
+        screenOptions={{
+          headerShown: false, // ✅ works here!
+        }}
+      >
+        <NavigationContainer>
+          <RootStack.Navigator
+            initialRouteName="Home"
+            screenOptions={{ headerShown: false }}
+          >
+            <RootStack.Screen name="Home" component={LoginScreen} />
+            <RootStack.Screen name="Signup" component={SignupScreen} />
+          </RootStack.Navigator>
+        </NavigationContainer>
+      </Stack>
     </ThemeProvider>
   );
 }
